@@ -1,7 +1,8 @@
-# Migrating to a new Vercel + Supabase account
+# Migrating to a new GitHub + Vercel + Supabase account
 
-This is the full checklist for moving Romancelovesophy off the current
-Vercel/Supabase account onto a different one. Written 2026-08-17.
+Step-by-step for moving Romancelovesophy off the current accounts onto new
+ones for all three (GitHub, Vercel, Supabase). Written 2026-08-17, updated
+now that all three new accounts exist.
 
 **Do not hand-write the new Supabase schema from the `.sql` files in this
 repo.** They've drifted from what's actually live — `articles.unpublish_at`,
@@ -10,8 +11,8 @@ repo.** They've drifted from what's actually live — `articles.unpublish_at`,
 dashboard/SQL editor at some point and were never committed. Worse, the
 `comments`, `events`, and `read_time` tables are used throughout the app
 (comment threads, share-count tracking, reading-time analytics) but don't
-exist in **any** tracked schema file at all. A dump of the real database is
-the only reliable source of truth — see Step 1.
+exist in **any** tracked schema file at all. A dump of the real database
+(Step 2) is the only reliable source of truth.
 
 ## Inventory (verified from code, 2026-08-17)
 
@@ -38,21 +39,47 @@ usage in code):
 | `YOUTUBE_CHANNEL_ID` | No — copy as-is (can be blank) |
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | No — copy as-is |
 | `RESEND_API_KEY` | No — copy as-is |
-| `RESEND_INBOUND_TOKEN` | No — copy as-is (used in code, missing from `.env.example` — add it there too) |
+| `RESEND_INBOUND_TOKEN` | No — copy as-is |
 | `CONTACT_FROM` / `CONTACT_OWNER_EMAIL` / `CONTACT_REPLY_DOMAIN` | No — copy as-is |
 
 Only the 3 Supabase variables actually change; everything else is a
 straight copy from the old Vercel project's env vars into the new one.
 
-**One hardcoded reference to update in code**: `next.config.ts` has the old
-Supabase hostname hardcoded in `images.remotePatterns`:
-```ts
-{ protocol: "https", hostname: "zzefwntpcqdgddzopdjr.supabase.co" },
-```
-Change this to the new project's `<ref>.supabase.co` once you have it (send
-it to me and I'll make this edit + build-verify it).
+---
 
-## Step 1 — Dump the real schema + data from the old Supabase project
+## Step 1 — Move the GitHub repo to the new account
+
+Two ways to do this — pick one:
+
+**Option A: Transfer ownership (recommended — keeps full commit history, one step)**
+1. On the *old* account, go to `github.com/retrodaddy/romancelovesophy` →
+   **Settings** → scroll to the bottom **Danger Zone** → **Transfer
+   ownership**.
+2. Enter the new account's username, confirm.
+3. Log into the *new* GitHub account and accept the transfer (via the email
+   GitHub sends, or the notification banner).
+4. Locally, point your existing clone at the new location:
+   ```bash
+   git remote set-url origin https://github.com/<new-username>/romancelovesophy.git
+   git fetch origin
+   ```
+
+**Option B: Push a fresh copy (if you want to keep the old repo around separately)**
+1. On the new GitHub account, create a new **empty** repository (no README,
+   no `.gitignore` — this repo already has those) named `romancelovesophy`.
+2. Locally:
+   ```bash
+   git remote set-url origin https://github.com/<new-username>/romancelovesophy.git
+   git push -u origin main
+   ```
+
+Either way, decide now whether the new repo should be public or private —
+it was made public earlier specifically to work around a Vercel Hobby-tier
+limitation on the old account. If the new Vercel account is also on Hobby,
+keep it public for the same reason (or upgrade to Pro if you want it
+private).
+
+## Step 2 — Dump the real schema + data from the old Supabase project
 
 From **Project Settings → Database → Connection string** on the *old*
 project, get the direct (non-pooled) connection string. Then, with
@@ -73,29 +100,35 @@ supabase link --project-ref zzefwntpcqdgddzopdjr
 supabase db dump -f romancelovesophy_dump.sql
 ```
 
-## Step 2 — Restore into the new Supabase project
+## Step 3 — Create the new Supabase project and restore into it
 
-Create the new project first (note its ref/URL), then:
-```bash
-psql "postgresql://postgres:[NEW_PASSWORD]@db.[NEW_REF].supabase.co:5432/postgres" \
-  -f romancelovesophy_dump.sql
-```
+1. In the new Supabase account, **create a new project**. Pick a region
+   close to where most readers actually are — the old project's traffic
+   skewed heavily toward Mumbai (~50% of image requests), so `ap-south-1`
+   (Mumbai) is worth considering if it's offered, rather than defaulting to
+   a US/EU region.
+2. Note its project ref and database password (set at creation).
+3. Restore the dump:
+   ```bash
+   psql "postgresql://postgres:[NEW_PASSWORD]@db.[NEW_REF].supabase.co:5432/postgres" \
+     -f romancelovesophy_dump.sql
+   ```
+4. Verify: `select tablename from pg_tables where schemaname='public';`
+   against the table list above, and spot-check that `is_admin()` and RLS
+   policies came through (they're plain SQL objects, so the dump includes
+   them).
 
-Afterwards, verify against the table list above — `select tablename from
-pg_tables where schemaname='public';` — and spot-check that `auth.uid()`
-and `is_admin()` still work (the dump includes functions/RLS policies since
-they live in `public` and are referenced by policies).
-
-## Step 3 — Migrate storage buckets (files don't come across in a SQL dump)
+## Step 4 — Migrate storage buckets (files don't come across in a SQL dump)
 
 Storage objects have to be copied separately — there's no one-click export.
-Simplest approach: a small script using `@supabase/supabase-js` against
-both projects, looping each bucket in the inventory above, listing objects
-in the old project and re-uploading to the new one under the same path. Say
-the word and I'll write that script — I'd need both projects' service-role
-keys to run it, or you can run it yourself with the keys kept local.
+Tell me when you're at this step and I'll write a small script (using
+`@supabase/supabase-js` against both projects) that loops each bucket in
+the inventory above, lists objects in the old project, and re-uploads them
+to the new one under the same path. You'd run it locally with both
+projects' service-role keys kept in your own `.env.local`, never shared
+with me.
 
-## Step 4 — Re-establish the admin login
+## Step 5 — Re-establish the admin login
 
 Supabase Auth users (`auth.users`) generally can't be copied via SQL dump
 across projects (password hashes/salts don't transfer cleanly, and
@@ -104,28 +137,39 @@ brother signs up fresh on the new project with the same email, then you
 insert a matching row into `profiles` (same email) to re-grant admin —
 mirroring how `is_admin()` already checks `profiles`.
 
-## Step 5 — New Vercel project
+## Step 6 — New Vercel project
 
-1. Import the GitHub repo (`retrodaddy/romancelovesophy` — already public,
-   so this works cleanly under the new account's Hobby tier too) into the
-   new Vercel account.
-2. Set the env vars from the table above.
-3. Deploy once to confirm it builds.
-4. Move the custom domain: remove it from the old Vercel project's Domains
-   settings, add it to the new project's Domains settings. DNS itself
-   doesn't need to change if you're pointing at Vercel's nameservers/A
-   records either way — this is just re-assigning which Vercel project the
-   domain routes to.
+1. In the new Vercel account, connect it to the new GitHub account (Vercel
+   for GitHub app install/authorize).
+2. **Import Project** → select `romancelovesophy` from the new GitHub
+   account.
+3. Before deploying, add the env vars from the table above — the 3
+   Supabase ones from the *new* project, everything else copied from the
+   old Vercel project's env vars (old dashboard → Project → Settings →
+   Environment Variables, to read the current values).
+4. Deploy. It'll land on a `*.vercel.app` URL first — verify the site works
+   end-to-end there (browse articles/quotes, log into `/admin`, try
+   creating a test scheduled post) before touching the domain.
 
-## Step 6 — Cutover order (minimize downtime)
+## Step 7 — Update the one hardcoded reference in code
 
-1. Do steps 1–4 (Supabase) fully, and confirm the new DB looks right,
-   **before** touching Vercel or DNS — the old site keeps running the
-   whole time.
-2. Deploy the new Vercel project pointed at the new Supabase project,
-   verify it end-to-end on its `*.vercel.app` preview URL first.
-3. Only once verified, move the domain over (Step 5.4). This is the
-   only step with any visitor-facing downtime, and it's typically seconds
-   to a few minutes.
-4. Keep the old Vercel project + Supabase project around (don't delete)
-   for a week or two as a rollback safety net before decommissioning them.
+`next.config.ts` has the old Supabase hostname hardcoded:
+```ts
+{ protocol: "https", hostname: "zzefwntpcqdgddzopdjr.supabase.co" },
+```
+Send me the new project's ref once Step 3 is done and I'll update this,
+rebuild, and verify — needs to happen before the new Vercel deployment can
+actually load any images.
+
+## Step 8 — Move the domain, then decommission the old accounts
+
+1. Once the new deployment is verified on its `.vercel.app` URL, remove the
+   custom domain from the *old* Vercel project's Domains settings, then add
+   it to the *new* project's Domains settings. DNS records themselves don't
+   need to change if both point at Vercel — this just reassigns which
+   project the domain routes to. Expect a few seconds to minutes of
+   downtime during the switch.
+2. Watch the new site on the real domain for a day or two.
+3. Keep the old Vercel project and old Supabase project around (don't
+   delete) for a week or two as a rollback safety net before shutting them
+   down for good.
