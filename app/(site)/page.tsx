@@ -28,7 +28,9 @@ export default async function HomePage() {
   const [featured, articles, videos] = await Promise.all([
     getFeaturedQuote(settings),
     getArticles(3),
-    getLatestVideos(settings?.youtube_channel_id ?? null, 6),
+    settings?.videos_on_home
+      ? getLatestVideos(settings?.youtube_channel_id ?? null, 6)
+      : Promise.resolve([]),
   ]);
 
   const portraitUrl = storageUrl("portraits", settings?.portrait_path);
@@ -41,18 +43,20 @@ export default async function HomePage() {
       <FeaturedQuote quote={featured} portraitUrl={portraitUrl} />
 
       {/* Latest Videos */}
-      <section className="container-x py-20">
-        <Reveal>
-          <SectionHeading
-            title="Latest Videos"
-            href="/videos"
-            cta="View channel"
-          />
-        </Reveal>
-        <Reveal delay={0.1}>
-          <VideoGallery videos={videos} />
-        </Reveal>
-      </section>
+      {settings?.videos_on_home && (
+        <section className="container-x py-20">
+          <Reveal>
+            <SectionHeading
+              title="Latest Videos"
+              href="/videos"
+              cta="View channel"
+            />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <VideoGallery videos={videos} />
+          </Reveal>
+        </section>
+      )}
 
       <AdSlot
         client={settings?.adsense_client ?? null}
