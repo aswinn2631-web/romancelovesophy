@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ArticleCard } from "@/components/site/article-card";
+import { AdSlot } from "@/components/site/ad-slot";
 import { getArticles, getSettings } from "@/lib/queries";
 
 // Always render fresh so scheduled articles (gated by published_at) appear
@@ -30,11 +31,19 @@ export default async function ArticlesPage() {
           The first articles are on their way.
         </p>
       ) : (
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((a) => (
-            <ArticleCard key={a.id} article={a} showViews={showViews} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((a) => (
+              <ArticleCard key={a.id} article={a} showViews={showViews} />
+            ))}
+          </div>
+
+          <AdSlot
+            client={settings?.adsense_client ?? null}
+            enabled={settings?.ads_enabled}
+            className="pt-12"
+          />
+        </>
       )}
     </div>
   );

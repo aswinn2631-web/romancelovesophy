@@ -21,8 +21,16 @@ export default async function SiteLayout({
     .filter((n) => n.visible)
     .filter((n) => n.href !== "/shorts" || settings?.shorts_enabled);
 
-  const adsense =
-    settings?.ads_enabled && settings.adsense_client ? settings.adsense_client : null;
+  const isAdsEnabled = settings?.ads_enabled !== false;
+  const rawAdClient = isAdsEnabled
+    ? settings?.adsense_client || process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-9602292967626980"
+    : null;
+
+  const adsense = rawAdClient
+    ? rawAdClient.startsWith("ca-pub-")
+      ? rawAdClient
+      : `ca-${rawAdClient.replace(/^pub-/, "pub-")}`
+    : null;
 
   return (
     <div className="flex min-h-screen flex-col">

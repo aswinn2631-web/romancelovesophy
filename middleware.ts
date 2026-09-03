@@ -56,6 +56,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith("/login") ||
     path.startsWith("/api") ||
     path.startsWith("/coming-soon") ||
+    path === "/ads.txt" ||
     path === "/robots.txt" ||
     path === "/sitemap.xml";
 
@@ -72,5 +73,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|ads.txt).*)"],
 };

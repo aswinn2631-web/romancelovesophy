@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { ShareMenu } from "@/components/site/share-menu";
 import { Comments } from "@/components/site/comments";
+import { AdSlot } from "@/components/site/ad-slot";
 import { getArticleBySlug, getSettings, getApprovedComments } from "@/lib/queries";
 import { incrementArticleView } from "@/lib/analytics";
 import { storageUrl } from "@/lib/storage";
@@ -93,6 +94,12 @@ export default async function ArticlePage({ params }: Params) {
         <div
           className="prose-editorial mx-auto mt-12 max-w-prose2"
           dangerouslySetInnerHTML={{ __html: a.content_html || "" }}
+        />
+
+        <AdSlot
+          client={settings?.adsense_client ?? null}
+          enabled={settings?.ads_enabled}
+          className="mx-auto my-12 max-w-prose2"
         />
 
         <div className="mx-auto mt-12 flex max-w-prose2 items-center justify-between border-t border-line pt-6">

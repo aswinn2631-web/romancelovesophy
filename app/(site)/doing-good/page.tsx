@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DoingGoodCard } from "@/components/site/doing-good-card";
-import { getDoingGoodPosts } from "@/lib/queries";
+import { AdSlot } from "@/components/site/ad-slot";
+import { getDoingGoodPosts, getSettings } from "@/lib/queries";
 
 // Always render fresh so scheduled posts (gated by published_at) appear the
 // moment their scheduled time passes, instead of waiting on stale ISR.
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DoingGoodPage() {
-  const posts = await getDoingGoodPosts();
+  const [posts, settings] = await Promise.all([getDoingGoodPosts(), getSettings()]);
 
   return (
     <div className="container-x py-16 sm:py-24">
@@ -29,11 +30,19 @@ export default async function DoingGoodPage() {
           The first stories are on their way.
         </p>
       ) : (
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((p) => (
-            <DoingGoodCard key={p.id} post={p} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.map((p) => (
+              <DoingGoodCard key={p.id} post={p} />
+            ))}
+          </div>
+
+          <AdSlot
+            client={settings?.adsense_client ?? null}
+            enabled={settings?.ads_enabled}
+            className="pt-12"
+          />
+        </>
       )}
     </div>
   );

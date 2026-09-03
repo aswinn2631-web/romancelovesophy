@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { QuoteGallery } from "@/components/site/quote-gallery";
+import { AdSlot } from "@/components/site/ad-slot";
 import { getQuotes, getSettings } from "@/lib/queries";
 
 // Always render fresh so scheduled quote images (gated by published_at)
@@ -39,6 +40,12 @@ export default async function QuotesPage({ searchParams }: { searchParams: Promi
         </p>
       </div>
       <QuoteGallery quotes={quotes} allowedTags={settings?.allowed_tags ?? []} />
+
+      <AdSlot
+        client={settings?.adsense_client ?? null}
+        enabled={settings?.ads_enabled}
+        className="pt-10"
+      />
 
       {/* Pagination */}
       {totalPages > 1 && (

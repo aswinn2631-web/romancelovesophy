@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { after } from "next/server";
 import { Youtube, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { AdSlot } from "@/components/site/ad-slot";
 import { getSettings } from "@/lib/queries";
 import { getChannelVideos, refreshIfStale } from "@/lib/youtube";
 import { relativeDate } from "@/lib/utils";
@@ -78,6 +79,12 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
               </Link>
             ))}
           </div>
+
+          <AdSlot
+            client={settings?.adsense_client ?? null}
+            enabled={settings?.ads_enabled}
+            className="pt-10"
+          />
 
           {total > 1 && (
             <div className="mt-10 flex flex-wrap items-center justify-center gap-2">

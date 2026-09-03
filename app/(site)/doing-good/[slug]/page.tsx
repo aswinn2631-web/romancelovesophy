@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { ShareMenu } from "@/components/site/share-menu";
-import { getDoingGoodPostBySlug } from "@/lib/queries";
+import { AdSlot } from "@/components/site/ad-slot";
+import { getDoingGoodPostBySlug, getSettings } from "@/lib/queries";
 import { storageUrl } from "@/lib/storage";
 import { formatDate } from "@/lib/utils";
 
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function DoingGoodDetailPage({ params }: Params) {
   const { slug } = await params;
-  const p = await getDoingGoodPostBySlug(slug);
+  const [p, settings] = await Promise.all([getDoingGoodPostBySlug(slug), getSettings()]);
   if (!p) notFound();
 
   const cover = storageUrl("doing-good-images", p.cover_image);
@@ -84,6 +85,12 @@ export default async function DoingGoodDetailPage({ params }: Params) {
         <div
           className="prose-editorial mx-auto mt-12 max-w-prose2"
           dangerouslySetInnerHTML={{ __html: p.content_html || "" }}
+        />
+
+        <AdSlot
+          client={settings?.adsense_client ?? null}
+          enabled={settings?.ads_enabled}
+          className="mx-auto my-12 max-w-prose2"
         />
 
         <div className="mx-auto mt-12 flex max-w-prose2 items-center justify-between border-t border-line pt-6">

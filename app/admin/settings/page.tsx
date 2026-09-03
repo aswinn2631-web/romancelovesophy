@@ -125,7 +125,9 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
 
         <Card>
           <h2 className="mb-2 font-medium">Google ads (AdSense)</h2>
-          <p className="mb-4 text-sm text-muted">Paste your publisher ID once Google approves the site, then switch ads on.</p>
+          <p className="mb-4 text-sm text-muted">
+            Paste your AdSense publisher ID below. When enabled, this loads AdSense across your articles and media pages, and automatically generates your verified <code className="text-xs text-primary">/ads.txt</code> file.
+          </p>
           <Field label="AdSense publisher ID"><input name="adsense_client" defaultValue={settings?.adsense_client ?? ""} className={inputCls} placeholder="ca-pub-XXXXXXXXXXXXXXXX" /></Field>
           <div className="mt-2"><Toggle name="ads_enabled" label="Show Google ads on the site" on={settings?.ads_enabled} /></div>
         </Card>

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Download } from "lucide-react";
 import { ShareMenu } from "@/components/site/share-menu";
-import { getQuoteById } from "@/lib/queries";
+import { AdSlot } from "@/components/site/ad-slot";
+import { getQuoteById, getSettings } from "@/lib/queries";
 import { storageUrl } from "@/lib/supabase/admin";
 
 type Params = { params: Promise<{ id: string }> };
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function QuotePage({ params }: Params) {
   const { id } = await params;
-  const quote = await getQuoteById(id);
+  const [quote, settings] = await Promise.all([getQuoteById(id), getSettings()]);
   if (!quote || quote.status !== "published") notFound();
 
   const img = storageUrl("quote-images", quote.image_path)!;
@@ -57,6 +58,12 @@ export default async function QuotePage({ params }: Params) {
           text={quote.title || "A reflection from Romancelovesophy"}
         />
       </div>
+
+      <AdSlot
+        client={settings?.adsense_client ?? null}
+        enabled={settings?.ads_enabled}
+        className="mt-12 w-full max-w-md"
+      />
     </div>
   );
 }

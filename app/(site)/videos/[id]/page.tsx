@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import { AdSlot } from "@/components/site/ad-slot";
 import { getSettings } from "@/lib/queries";
 import { after } from "next/server";
 import { getChannelVideos, refreshIfStale } from "@/lib/youtube";
@@ -56,6 +57,12 @@ export default async function WatchPage({ params }: { params: Promise<{ id: stri
               )}
             </>
           )}
+
+          <AdSlot
+            client={settings?.adsense_client ?? null}
+            enabled={settings?.ads_enabled}
+            className="mt-8"
+          />
         </div>
 
         <aside>
