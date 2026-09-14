@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
   images: {
     remotePatterns: [
+      { protocol: "https", hostname: "**.supabase.co" },
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "dryksvzfdxkduwhovqey.supabase.co" },
       { protocol: "https", hostname: "zzefwntpcqdgddzopdjr.supabase.co" },
       { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "img.youtube.com" },

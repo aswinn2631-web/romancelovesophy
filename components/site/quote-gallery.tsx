@@ -72,7 +72,8 @@ export function QuoteGallery({
       ) : (
         <div className="masonry">
           {filtered.map((q) => {
-            const src = storageUrl("quote-images", q.image_path)!;
+            const src = storageUrl("quote-images", q.image_path);
+            if (!src) return null;
             const ratio =
               q.width && q.height ? q.width / q.height : 0.8;
             return (
