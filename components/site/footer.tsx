@@ -43,10 +43,13 @@ export function Footer({ social }: { social: SocialLink[] }) {
       <div className="border-t border-line">
         <div className="container-x flex flex-col items-center justify-between gap-3 py-6 text-xs text-muted sm:flex-row">
           <p>© {new Date().getFullYear()} Romancelovesophy. All rights reserved.</p>
-          <div className="flex gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
             <Link href="/quotes" className="hover:text-[var(--fg)]">Quotes</Link>
             <Link href="/articles" className="hover:text-[var(--fg)]">Writings</Link>
             <Link href="/connect" className="hover:text-[var(--fg)]">Connect</Link>
+            <Link href="/contact" className="hover:text-[var(--fg)]">Contact</Link>
+            <Link href="/privacy" className="hover:text-[var(--fg)]">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-[var(--fg)]">Terms</Link>
           </div>
           <p>
             Crafted by{" "}
