@@ -67,7 +67,8 @@ export function RichEditor({
     el.textContent = css;
     document.head.appendChild(el);
     return () => {
-      document.head.removeChild(el);
+      if (el.parentNode) el.parentNode.removeChild(el);
+      else el.remove();
     };
   }, [fontList]);
 
@@ -93,22 +94,40 @@ export function RichEditor({
   if (!editor) return <div className="h-80 rounded-lg border border-line" />;
 
   async function uploadImage(file: File) {
+    if (file.size > 4.5 * 1024 * 1024) {
+      alert("Image is larger than 4.5MB. Please upload a smaller image.");
+      return;
+    }
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (data.url) editor?.chain().focus().setImage({ src: data.url, align: "center", width: "70%" }).run();
-    else alert(data.error || "Image upload failed. Please try again.");
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.url) {
+        editor?.chain().focus().setImage({ src: data.url }).run();
+        editor?.chain().focus().updateAttributes("image", { align: "center", width: "70%" }).run();
+      } else {
+        alert(data?.error || "Image upload failed. Please try again.");
+      }
+    } catch {
+      alert("Network error while uploading image. Please try again.");
+    }
   }
 
   async function uploadFont(file: File) {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/admin/fonts", { method: "POST", body: fd });
-    const data = await res.json();
-    if (data.name) {
-      setFontList((list) => [...list, { name: data.name, url: data.url }]);
-      editor?.chain().focus().setFontFamily(data.name).run();
+    try {
+      const res = await fetch("/api/admin/fonts", { method: "POST", body: fd });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.name) {
+        setFontList((list) => [...list, { name: data.name, url: data.url }]);
+        editor?.chain().focus().setFontFamily(data.name).run();
+      } else {
+        alert(data?.error || "Font upload failed.");
+      }
+    } catch {
+      alert("Network error while uploading font.");
     }
   }
 

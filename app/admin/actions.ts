@@ -196,17 +196,57 @@ export async function toggleQuoteStatus(id: string, makeLive: boolean) {
   revalidatePath("/admin/settings");
 }
 
-export async function saveArticle(formData: FormData) {
-  await requireAdmin();
+export type ActionState = { ok: boolean; error?: string } | null;
+
+async function getUniqueSlug(
+  sb: ReturnType<typeof createAdminClient>,
+  table: string,
+  desiredSlug: string,
+  currentId?: string | null
+): Promise<string> {
+  const baseSlug = desiredSlug || "post";
+  let slug = baseSlug;
+  let count = 1;
+  while (true) {
+    let query = sb.from(table).select("id").eq("slug", slug);
+    if (currentId) query = query.neq("id", currentId);
+    const { data } = await query.maybeSingle();
+    if (!data) return slug;
+    count++;
+    slug = `${baseSlug}-${count}`;
+    if (count > 50) return `${baseSlug}-${crypto.randomUUID().slice(0, 8)}`;
+  }
+}
+
+export async function saveArticle(
+  prevStateOrFormData: ActionState | FormData,
+  formDataParam?: FormData
+): Promise<ActionState> {
+  const formData =
+    formDataParam || (prevStateOrFormData instanceof FormData ? prevStateOrFormData : null);
+  if (!formData) return { ok: false, error: "Invalid form data received." };
+
+  try {
+    await requireAdmin();
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
+    return { ok: false, error: "You are not authorized. Please log in again." };
+  }
+
   const sb = createAdminClient();
   const id = formData.get("id") as string | null;
   const title = String(formData.get("title") || "").trim();
+  if (!title) return { ok: false, error: "Please provide an article title." };
+
   const content_html = String(formData.get("content_html") || "");
   const status = (formData.get("status") as string) || "draft";
 
+  const rawSlug = (formData.get("slug") as string)?.trim() || slugify(title);
+  const resolvedSlug = await getUniqueSlug(sb, "articles", rawSlug, id);
+
   const base = {
     title,
-    slug: (formData.get("slug") as string) || slugify(title),
+    slug: resolvedSlug,
     excerpt: formData.get("excerpt") || null,
     content_html,
     category_id: formData.get("category_id") || null,
@@ -218,41 +258,86 @@ export async function saveArticle(formData: FormData) {
   } as Record<string, unknown>;
 
   const cover = formData.get("cover") as File | null;
-  if (cover && cover.size > 0) base.cover_image = await uploadFile("article-images", cover);
+  if (cover && cover.size > 0) {
+    if (cover.size > 4.5 * 1024 * 1024) {
+      return {
+        ok: false,
+        error: `Cover image is ${(cover.size / 1048576).toFixed(1)} MB. The limit is 4.5 MB. Please upload a smaller image.`,
+      };
+    }
+    try {
+      base.cover_image = await uploadFile("article-images", cover, 4.5 * 1024 * 1024);
+    } catch (err: any) {
+      return { ok: false, error: `Image upload failed: ${err?.message || "Unknown error"}` };
+    }
+  }
 
-  // Scheduled publishing: an explicit "Publish at" wins (can be future-dated
-  // to schedule, or past-dated). With no explicit date, a brand-new article
-  // goes live immediately; re-saving an already-published article leaves its
-  // existing published_at alone instead of bumping it to "now" every edit.
+  // Scheduled publishing: explicit publish_at wins. With no explicit date,
+  // newly published articles or drafts switching to published get published_at = now.
   const publishAtRaw = (formData.get("publish_at") as string | null) || "";
   const unpublishAtRaw = (formData.get("unpublish_at") as string | null) || "";
   if (status === "published") {
-    if (publishAtRaw) base.published_at = istInputToUtcIso(publishAtRaw);
-    else if (!id) base.published_at = new Date().toISOString();
+    if (publishAtRaw) {
+      base.published_at = istInputToUtcIso(publishAtRaw);
+    } else if (!id) {
+      base.published_at = new Date().toISOString();
+    } else {
+      const { data: existing } = await sb
+        .from("articles")
+        .select("published_at")
+        .eq("id", id)
+        .maybeSingle();
+      if (!existing?.published_at) {
+        base.published_at = new Date().toISOString();
+      }
+    }
   }
   base.unpublish_at = unpublishAtRaw ? istInputToUtcIso(unpublishAtRaw) : null;
 
   const { error } = id
     ? await sb.from("articles").update(base).eq("id", id)
     : await sb.from("articles").insert(base);
-  if (error) throw new Error("Save failed: " + error.message);
 
+  if (error) {
+    console.error("[saveArticle] Database error:", error);
+    return { ok: false, error: "Save failed: " + error.message };
+  }
+
+  revalidatePath("/");
   revalidatePath("/articles");
   revalidatePath("/admin/articles");
   redirect("/admin/articles");
 }
 
-export async function saveDoingGood(formData: FormData) {
-  await requireAdmin();
+export async function saveDoingGood(
+  prevStateOrFormData: ActionState | FormData,
+  formDataParam?: FormData
+): Promise<ActionState> {
+  const formData =
+    formDataParam || (prevStateOrFormData instanceof FormData ? prevStateOrFormData : null);
+  if (!formData) return { ok: false, error: "Invalid form data received." };
+
+  try {
+    await requireAdmin();
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
+    return { ok: false, error: "You are not authorized. Please log in again." };
+  }
+
   const sb = createAdminClient();
   const id = formData.get("id") as string | null;
   const title = String(formData.get("title") || "").trim();
+  if (!title) return { ok: false, error: "Please provide a post title." };
+
   const content_html = String(formData.get("content_html") || "");
   const status = (formData.get("status") as string) || "draft";
 
+  const rawSlug = (formData.get("slug") as string)?.trim() || slugify(title);
+  const resolvedSlug = await getUniqueSlug(sb, "doing_good_posts", rawSlug, id);
+
   const base = {
     title,
-    slug: (formData.get("slug") as string) || slugify(title),
+    slug: resolvedSlug,
     excerpt: formData.get("excerpt") || null,
     content_html,
     category_id: formData.get("category_id") || null,
@@ -264,21 +349,50 @@ export async function saveDoingGood(formData: FormData) {
   } as Record<string, unknown>;
 
   const cover = formData.get("cover") as File | null;
-  if (cover && cover.size > 0) base.cover_image = await uploadFile("doing-good-images", cover);
+  if (cover && cover.size > 0) {
+    if (cover.size > 4.5 * 1024 * 1024) {
+      return {
+        ok: false,
+        error: `Cover image is ${(cover.size / 1048576).toFixed(1)} MB. The limit is 4.5 MB. Please upload a smaller image.`,
+      };
+    }
+    try {
+      base.cover_image = await uploadFile("doing-good-images", cover, 4.5 * 1024 * 1024);
+    } catch (err: any) {
+      return { ok: false, error: `Image upload failed: ${err?.message || "Unknown error"}` };
+    }
+  }
 
   const publishAtRaw = (formData.get("publish_at") as string | null) || "";
   const unpublishAtRaw = (formData.get("unpublish_at") as string | null) || "";
   if (status === "published") {
-    if (publishAtRaw) base.published_at = istInputToUtcIso(publishAtRaw);
-    else if (!id) base.published_at = new Date().toISOString();
+    if (publishAtRaw) {
+      base.published_at = istInputToUtcIso(publishAtRaw);
+    } else if (!id) {
+      base.published_at = new Date().toISOString();
+    } else {
+      const { data: existing } = await sb
+        .from("doing_good_posts")
+        .select("published_at")
+        .eq("id", id)
+        .maybeSingle();
+      if (!existing?.published_at) {
+        base.published_at = new Date().toISOString();
+      }
+    }
   }
   base.unpublish_at = unpublishAtRaw ? istInputToUtcIso(unpublishAtRaw) : null;
 
   const { error } = id
     ? await sb.from("doing_good_posts").update(base).eq("id", id)
     : await sb.from("doing_good_posts").insert(base);
-  if (error) throw new Error("Save failed: " + error.message);
 
+  if (error) {
+    console.error("[saveDoingGood] Database error:", error);
+    return { ok: false, error: "Save failed: " + error.message };
+  }
+
+  revalidatePath("/");
   revalidatePath("/doing-good");
   revalidatePath("/admin/doing-good");
   redirect("/admin/doing-good");

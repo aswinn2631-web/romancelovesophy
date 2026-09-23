@@ -15,18 +15,22 @@ export function readingTime(html: string | null): number {
   return Math.max(1, Math.round(words / 200));
 }
 
-export function formatDate(value: string | null): string {
+export function formatDate(value: string | null | undefined): string {
   if (!value) return "";
-  return new Date(value).toLocaleDateString("en-GB", {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 }
 
-export function relativeDate(value: string | null): string {
+export function relativeDate(value: string | null | undefined): string {
   if (!value) return "";
-  const diff = Date.now() - new Date(value).getTime();
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  const diff = Date.now() - d.getTime();
   const days = Math.floor(diff / 86_400_000);
   if (days < 1) return "today";
   if (days === 1) return "1 day ago";
@@ -76,9 +80,11 @@ export function istInputToUtcIso(value: string): string | null {
 
 // Short "12 Jul, 3:30 pm" style formatter for admin schedule badges, always
 // shown in IST regardless of where the page is rendered.
-export function formatDateTime(value: string | null): string {
+export function formatDateTime(value: string | null | undefined): string {
   if (!value) return "";
-  return new Date(value).toLocaleString("en-GB", {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleString("en-GB", {
     day: "numeric",
     month: "short",
     hour: "numeric",

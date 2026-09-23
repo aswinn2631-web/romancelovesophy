@@ -1,18 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useFormStatus } from "react-dom";
-import { saveDoingGood } from "@/app/admin/actions";
+import { useState, useActionState } from "react";
+import { saveDoingGood, type ActionState } from "@/app/admin/actions";
 import { RichEditor } from "./rich-editor";
 import { inputCls, Field } from "@/components/admin/ui";
 import { slugify, toDatetimeLocalValue } from "@/lib/utils";
 import type { DoingGoodPost, Category } from "@/lib/types";
 
-// Disables both buttons and labels the one clicked while the server action
-// (which can include a cover-image upload) is in flight, so a slow save
-// never looks like nothing happened.
-function DoingGoodSaveButtons() {
-  const { pending } = useFormStatus();
+function DoingGoodSaveButtons({ isPending }: { isPending: boolean }) {
   const [clicked, setClicked] = useState<"draft" | "published" | null>(null);
 
   return (
@@ -21,21 +16,21 @@ function DoingGoodSaveButtons() {
         type="submit"
         name="status"
         value="draft"
-        disabled={pending}
+        disabled={isPending}
         onClick={() => setClicked("draft")}
         className="flex-1 rounded-md border border-line px-4 py-2.5 text-sm text-muted transition hover:text-[var(--fg)] disabled:opacity-60"
       >
-        {pending && clicked === "draft" ? "Saving…" : "Save draft"}
+        {isPending && clicked === "draft" ? "Saving…" : "Save draft"}
       </button>
       <button
         type="submit"
         name="status"
         value="published"
-        disabled={pending}
+        disabled={isPending}
         onClick={() => setClicked("published")}
         className="flex-1 rounded-md border border-[var(--fg)] px-4 py-2.5 text-sm transition hover:bg-[var(--fg)] hover:text-[var(--bg)] disabled:opacity-60"
       >
-        {pending && clicked === "published" ? "Publishing…" : "Publish"}
+        {isPending && clicked === "published" ? "Publishing…" : "Publish"}
       </button>
     </div>
   );
@@ -50,13 +45,35 @@ export function DoingGoodForm({
   categories: Category[];
   fonts?: { name: string; url?: string }[];
 }) {
+  const [state, formAction, isPending] = useActionState<ActionState, FormData>(saveDoingGood, null);
   const [html, setHtml] = useState(post?.content_html || "");
   const [title, setTitle] = useState(post?.title || "");
+  const [coverError, setCoverError] = useState<string | null>(null);
+
+  function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setCoverError(null);
+    const file = e.target.files?.[0];
+    if (file && file.size > 4.5 * 1024 * 1024) {
+      setCoverError(
+        `Selected cover image is ${(file.size / 1048576).toFixed(1)} MB. Please choose an image under 4.5 MB.`
+      );
+      e.target.value = "";
+    }
+  }
+
+  const errorMessage = coverError || state?.error;
 
   return (
-    <form action={saveDoingGood} className="grid gap-8 lg:grid-cols-[1fr_320px]">
+    <form action={formAction} className="grid gap-8 lg:grid-cols-[1fr_320px]">
       {post && <input type="hidden" name="id" value={post.id} />}
       <input type="hidden" name="content_html" value={html} />
+
+      {errorMessage && (
+        <div className="col-span-full rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-400">
+          <p className="font-semibold">Unable to save post</p>
+          <p className="mt-1 text-xs opacity-90">{errorMessage}</p>
+        </div>
+      )}
 
       <div className="space-y-4">
         <input
@@ -79,23 +96,42 @@ export function DoingGoodForm({
               placeholder={slugify(title) || "auto-generated"}
               className={inputCls}
             />
-            <p className="mt-1 text-xs text-muted">The web address for this piece (e.g. /doing-good/beach-cleanup). Leave blank to build it from the title automatically.</p>
+            <p className="mt-1 text-xs text-muted">
+              The web address for this piece (e.g. /doing-good/beach-cleanup). Leave blank to build it from the title automatically.
+            </p>
           </Field>
           <Field label="Excerpt">
-            <textarea name="excerpt" defaultValue={post?.excerpt || ""} rows={3} className={`${inputCls} h-auto py-2`} />
-            <p className="mt-1 text-xs text-muted">A 1–2 sentence summary shown on the cards and previews. Optional.</p>
+            <textarea
+              name="excerpt"
+              defaultValue={post?.excerpt || ""}
+              rows={3}
+              className={`${inputCls} h-auto py-2`}
+            />
+            <p className="mt-1 text-xs text-muted">
+              A 1–2 sentence summary shown on the cards and previews. Optional.
+            </p>
           </Field>
           <Field label="Category">
             <select name="category_id" defaultValue={post?.category_id || ""} className={inputCls}>
               <option value="">None</option>
               {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-muted">Optional grouping. Manage these in the Categories tab. “None” is fine.</p>
+            <p className="mt-1 text-xs text-muted">
+              Optional grouping. Manage these in the Categories tab. “None” is fine.
+            </p>
           </Field>
           <Field label="Cover image">
-            <input type="file" name="cover" accept="image/*" className="text-sm" />
+            <input
+              type="file"
+              name="cover"
+              accept="image/*"
+              className="text-sm"
+              onChange={handleCoverChange}
+            />
           </Field>
         </div>
 
@@ -108,7 +144,9 @@ export function DoingGoodForm({
               defaultValue={toDatetimeLocalValue(post?.published_at)}
               className={inputCls}
             />
-            <p className="mt-1 text-xs text-muted">Leave blank to publish immediately when you hit Publish. Set a future date/time to schedule it to go live then instead.</p>
+            <p className="mt-1 text-xs text-muted">
+              Leave blank to publish immediately when you hit Publish. Set a future date/time to schedule it to go live then instead.
+            </p>
           </Field>
           <Field label="Unpublish at (optional)">
             <input
@@ -117,7 +155,9 @@ export function DoingGoodForm({
               defaultValue={toDatetimeLocalValue(post?.unpublish_at)}
               className={inputCls}
             />
-            <p className="mt-1 text-xs text-muted">Automatically hides it from the site after this date/time. Leave blank to keep it live indefinitely.</p>
+            <p className="mt-1 text-xs text-muted">
+              Automatically hides it from the site after this date/time. Leave blank to keep it live indefinitely.
+            </p>
           </Field>
         </div>
 
@@ -127,7 +167,12 @@ export function DoingGoodForm({
             <input name="seo_title" defaultValue={post?.seo_title || ""} className={inputCls} />
           </Field>
           <Field label="SEO description">
-            <textarea name="seo_desc" defaultValue={post?.seo_desc || ""} rows={2} className={`${inputCls} h-auto py-2`} />
+            <textarea
+              name="seo_desc"
+              defaultValue={post?.seo_desc || ""}
+              rows={2}
+              className={`${inputCls} h-auto py-2`}
+            />
           </Field>
         </div>
 
@@ -141,7 +186,7 @@ export function DoingGoodForm({
           </a>
         )}
 
-        <DoingGoodSaveButtons />
+        <DoingGoodSaveButtons isPending={isPending} />
       </aside>
     </form>
   );
