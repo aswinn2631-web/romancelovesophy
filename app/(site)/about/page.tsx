@@ -22,12 +22,12 @@ export default async function AboutPage() {
     <div className="container-x py-16 sm:py-24">
       {/* Hero Header */}
       <header className="mx-auto max-w-3xl text-center">
-        <p className="eyebrow">About the publication</p>
+        <p className="eyebrow">Romance · Love · Philosophy</p>
         <h1 className="mt-4 font-serif text-4xl font-medium tracking-tight sm:text-6xl">
-          Where Love Meets Philosophy
+          Romancelovesophy
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">
-          Romancelovesophy is a quiet retreat from the relentless velocity of the modern internet — a digital sanctuary dedicated to examining romance, existential awareness, and the profound art of living.
+          Romancelovesophy is a quiet retreat from the relentless velocity of the modern internet — a digital sanctuary dedicated to examining romance, love, existential awareness, and the profound art of living.
         </p>
       </header>
 

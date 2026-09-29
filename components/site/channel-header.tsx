@@ -14,11 +14,11 @@ export function ChannelHeader({ settings }: { settings: Settings | null }) {
   if (!img) return <Hero settings={settings} />;
 
   const fx = settings?.header_focus_x ?? 50;
-  const eyebrow = settings?.hero_eyebrow || "Classical wisdom · Modern influence";
-  const headline = settings?.hero_headline || "Where love meets philosophy";
+  const eyebrow = settings?.hero_eyebrow || "Romance, Love, and Philosophy";
+  const headline = settings?.hero_headline || "Romancelovesophy";
   const sub =
     settings?.hero_sub ||
-    "Quiet reflections on love, meaning, and the art of living — written, filmed, and collected.";
+    "You are the Self-aware Reality on which the entire drama of world exists.";
 
   return (
     <section className="container-x pt-6 pb-12">

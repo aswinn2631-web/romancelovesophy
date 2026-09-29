@@ -22,20 +22,29 @@ const siteUrl = rawSiteUrl.includes("romancelovesophy.com") && !rawSiteUrl.inclu
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Romancelovesophy — Where love meets philosophy",
+    default: "Romancelovesophy — Romance, Love, and Philosophy",
     template: "%s · Romancelovesophy",
   },
   description:
-    "Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Romancelovesophy.",
+    "Romance, Love, and Philosophy. Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Aswin Sundharam.",
   alternates: {
     canonical: siteUrl,
   },
   openGraph: {
     type: "website",
     siteName: "Romancelovesophy",
+    title: "Romancelovesophy — Romance, Love, and Philosophy",
+    description:
+      "Romance, Love, and Philosophy. Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Aswin Sundharam.",
     url: siteUrl,
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: "Romancelovesophy — Romance, Love, and Philosophy",
+    description:
+      "Romance, Love, and Philosophy. Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Aswin Sundharam.",
+  },
+
   other: {
     "google-adsense-account": "ca-pub-9602292967626980",
   },

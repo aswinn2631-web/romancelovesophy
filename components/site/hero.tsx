@@ -3,11 +3,11 @@ import { ArrowRight } from "lucide-react";
 import type { Settings } from "@/lib/types";
 
 export function Hero({ settings }: { settings: Settings | null }) {
-  const eyebrow = settings?.hero_eyebrow || "Classical wisdom · Modern influence";
-  const headline = settings?.hero_headline || "Where love meets philosophy";
+  const eyebrow = settings?.hero_eyebrow || "Romance, Love, and Philosophy";
+  const headline = settings?.hero_headline || "Romancelovesophy";
   const sub =
     settings?.hero_sub ||
-    "Quiet reflections on love, meaning, and the art of living — written, filmed, and collected.";
+    "You are the Self-aware Reality on which the entire drama of world exists.";
 
   return (
     <section className="container-x flex flex-col items-center pt-24 pb-20 text-center sm:pt-32 sm:pb-28">
