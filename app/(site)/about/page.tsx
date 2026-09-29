@@ -6,7 +6,7 @@ import { getSettings, getSocialLinks } from "@/lib/queries";
 import { storageUrl } from "@/lib/supabase/admin";
 import { SocialIcon } from "@/components/site/icons";
 
-export const revalidate = 86400; // 1-day ISR for static about page
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About Us · Romancelovesophy",

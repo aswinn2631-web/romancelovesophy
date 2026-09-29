@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/site/contact-form";
 import { SocialIcon } from "@/components/site/icons";
 import { getSocialLinks, getSettings } from "@/lib/queries";
 
-export const revalidate = 604800; // 1-week ISR for static contact form page
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Contact",
