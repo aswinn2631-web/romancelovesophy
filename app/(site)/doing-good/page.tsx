@@ -26,9 +26,41 @@ export default async function DoingGoodPage() {
       </div>
 
       {posts.length === 0 ? (
-        <p className="py-16 text-center text-sm text-muted">
-          The first stories are on their way.
-        </p>
+        <div className="mx-auto max-w-2xl space-y-12">
+          <div className="rounded-2xl border border-line bg-card/40 p-8 sm:p-10 text-center">
+            <h2 className="font-serif text-2xl font-medium">Philosophy in Action</h2>
+            <p className="mt-4 text-sm sm:text-base leading-relaxed text-muted">
+              We believe philosophy should not remain trapped in books or abstract contemplation. &ldquo;Doing Good&rdquo; is our commitment to quiet impact — highlighting human kindness, supporting thoughtful grassroots initiatives, and celebrating those who bring grace into everyday life.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="rounded-xl border border-line p-6 bg-card/20">
+              <h3 className="font-serif text-lg font-medium">Quiet Generosity</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Documenting self-effacing individuals who serve their local communities without seeking recognition or viral attention.
+              </p>
+            </div>
+            <div className="rounded-xl border border-line p-6 bg-card/20">
+              <h3 className="font-serif text-lg font-medium">Wisdom &amp; Literacy</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Supporting the distribution of contemplative books, notebooks, and educational resources to open minds and young thinkers.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center pt-4">
+            <p className="text-sm text-muted mb-4">
+              Know of an inspiring community initiative or a quiet act of kindness worth sharing?
+            </p>
+            <a
+              href="/contact"
+              className="inline-block rounded-md border border-[var(--fg)] px-6 py-2.5 text-sm font-medium transition hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+            >
+              Share a Story with Us
+            </a>
+          </div>
+        </div>
       ) : (
         <>
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">

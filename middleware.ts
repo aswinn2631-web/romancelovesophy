@@ -1,21 +1,26 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-let liveCache = { val: false, exp: 0 };
+let liveCache = { val: true, exp: 0 };
 async function isSiteLive(): Promise<boolean> {
   if (Date.now() < liveCache.exp) return liveCache.val;
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+    if (!url || !key) return true;
     const res = await fetch(`${url}/rest/v1/settings?id=eq.1&select=site_live`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(3500),
     });
+    if (!res.ok) return true;
     const data = await res.json();
-    const val = !!(Array.isArray(data) && data[0] && data[0].site_live);
-    liveCache = { val, exp: Date.now() + 6000 };
+    const val = Array.isArray(data) && data[0] && typeof data[0].site_live === "boolean"
+      ? data[0].site_live
+      : true;
+    liveCache = { val, exp: Date.now() + 60000 };
     return val;
   } catch {
-    return liveCache.exp ? liveCache.val : false;
+    return liveCache.exp ? liveCache.val : true;
   }
 }
 

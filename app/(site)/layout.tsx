@@ -4,6 +4,7 @@ import { Footer } from "@/components/site/footer";
 import { SponsorBar } from "@/components/site/sponsor-bar";
 import { FontFaces } from "@/components/site/font-faces";
 import { PageTracker } from "@/components/site/page-tracker";
+import { CookieBanner } from "@/components/site/cookie-banner";
 import { getSocialLinks, getSettings } from "@/lib/queries";
 import { resolveNav } from "@/lib/nav";
 
@@ -48,6 +49,8 @@ export default async function SiteLayout({
       <Header social={social} nav={nav} />
       <main className="flex-1">{children}</main>
       <Footer social={social} />
+      <CookieBanner />
     </div>
   );
 }
+

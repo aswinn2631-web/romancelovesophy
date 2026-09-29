@@ -4,11 +4,13 @@ import type { NavItem } from "@/lib/types";
 // but never create a broken link, because hrefs are locked to these routes.
 export const DEFAULT_NAV: NavItem[] = [
   { href: "/", label: "Home", visible: true },
+  { href: "/articles", label: "Writings", visible: true },
   { href: "/quotes", label: "Quotes", visible: true },
   { href: "/videos", label: "Videos", visible: true },
-  { href: "/articles", label: "Writings", visible: true },
-  { href: "/doing-good", label: "Doing Good", visible: true },
+  { href: "/about", label: "About", visible: true },
   { href: "/connect", label: "Connect", visible: true },
+  { href: "/contact", label: "Contact", visible: true },
+  { href: "/doing-good", label: "Doing Good", visible: true },
 ];
 
 // Merge saved menu config with the known routes: keep saved order + labels +

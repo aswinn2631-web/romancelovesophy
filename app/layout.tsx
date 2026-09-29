@@ -14,7 +14,10 @@ const sans = Inter({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.romancelovesophy.com";
+const siteUrl = rawSiteUrl.includes("romancelovesophy.com") && !rawSiteUrl.includes("www.")
+  ? "https://www.romancelovesophy.com"
+  : rawSiteUrl;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -24,12 +27,18 @@ export const metadata: Metadata = {
   },
   description:
     "Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Romancelovesophy.",
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: "website",
     siteName: "Romancelovesophy",
     url: siteUrl,
   },
   twitter: { card: "summary_large_image" },
+  other: {
+    "google-adsense-account": "ca-pub-9602292967626980",
+  },
 };
 
 export default function RootLayout({
@@ -39,6 +48,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9602292967626980"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${serif.variable} ${sans.variable}`}>
         <ThemeProvider>{children}</ThemeProvider>
       </body>

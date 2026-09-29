@@ -24,9 +24,50 @@ export default async function DownloadsPage() {
       </div>
 
       {files.length === 0 ? (
-        <p className="py-16 text-center text-sm text-muted">
-          Downloadable resources are coming soon.
-        </p>
+        <div className="mx-auto max-w-2xl space-y-10">
+          <div className="rounded-2xl border border-line bg-card/40 p-8 sm:p-10 text-center">
+            <h2 className="font-serif text-2xl font-medium">Contemplative Reading Guide</h2>
+            <p className="mt-4 text-sm sm:text-base leading-relaxed text-muted">
+              We curate reading companions and digital reflections to accompany your personal journey through philosophy and mindful solitude. Explore these recommended foundational texts:
+            </p>
+          </div>
+
+          <div className="divide-y divide-[var(--line)] border-y border-line">
+            <div className="py-5 flex items-start gap-4">
+              <span className="font-serif text-xl text-muted font-medium w-8">01</span>
+              <div>
+                <p className="font-medium">Letters from a Stoic — Seneca</p>
+                <p className="text-sm text-muted mt-1">Timeless advice on grief, friendship, wealth, and the brevity of life.</p>
+              </div>
+            </div>
+            <div className="py-5 flex items-start gap-4">
+              <span className="font-serif text-xl text-muted font-medium w-8">02</span>
+              <div>
+                <p className="font-medium">The Prophet — Kahlil Gibran</p>
+                <p className="text-sm text-muted mt-1">A poetic exploration of love, marriage, sorrow, passion, and freedom.</p>
+              </div>
+            </div>
+            <div className="py-5 flex items-start gap-4">
+              <span className="font-serif text-xl text-muted font-medium w-8">03</span>
+              <div>
+                <p className="font-medium">The Wisdom of Insecurity — Alan Watts</p>
+                <p className="text-sm text-muted mt-1">A message for an age of anxiety on accepting the present moment without resistance.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center pt-2">
+            <p className="text-sm text-muted mb-4">
+              Looking for something specific or want to request a guide?
+            </p>
+            <a
+              href="/contact"
+              className="inline-block rounded-md border border-[var(--fg)] px-6 py-2.5 text-sm font-medium transition hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+            >
+              Reach Out to Us
+            </a>
+          </div>
+        </div>
       ) : (
         <div className="mx-auto max-w-2xl divide-y divide-[var(--line)] border-y border-line">
           {files.map((f) => (
