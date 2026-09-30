@@ -81,7 +81,7 @@ export default async function WatchPage({ params }: { params: Promise<{ id: stri
                 </div>
               </Link>
             ))}
-            {upNext.length === 0 && <p className="text-sm text-muted">No other films yet.</p>}
+            {upNext.length === 0 && <p className="text-sm text-muted">No other videos yet.</p>}
           </div>
         </aside>
       </div>

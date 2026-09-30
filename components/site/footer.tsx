@@ -11,7 +11,7 @@ export function Footer({ social }: { social: SocialLink[] }) {
           <p className="font-serif text-xl">Romancelovesophy</p>
           <p className="mt-3 text-sm leading-relaxed text-muted">
             A quiet home for reflections on love, meaning, and the art of living.
-            New quotes, films, and writing — gathered in one place.
+            New quotes, writings, and reflections — gathered in one place.
           </p>
           <div className="mt-6 flex items-center gap-4">
             {social.map((s) => (
@@ -32,7 +32,7 @@ export function Footer({ social }: { social: SocialLink[] }) {
         <div>
           <p className="eyebrow">Newsletter</p>
           <p className="mt-3 text-sm text-muted">
-            New articles, films, and quote releases — occasionally, never spam.
+            New articles, quotes, and reflections — occasionally, never spam.
           </p>
           <div className="mt-4">
             <Newsletter source="footer" />

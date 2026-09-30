@@ -13,7 +13,7 @@ const PER = 12;
 
 export const metadata: Metadata = {
   title: "Videos",
-  description: "Every film and reflection from the Romancelovesophy YouTube channel.",
+  description: "Videos and reflections from the Romancelovesophy YouTube channel.",
 };
 
 // Windowed page list: 1 … 4 5 6 … 20
@@ -44,7 +44,7 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
   return (
     <div className="container-x py-16 sm:py-24">
       <div className="mb-10 text-center">
-        <p className="eyebrow">Curated films</p>
+        <p className="eyebrow">YouTube Channel</p>
         <h1 className="mt-4 font-serif text-4xl font-medium sm:text-5xl">Videos</h1>
         <p className="mx-auto mt-4 max-w-md text-sm text-muted">
           The full channel, newest first. New uploads appear here automatically.

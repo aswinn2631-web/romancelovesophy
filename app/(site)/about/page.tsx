@@ -27,7 +27,7 @@ export default async function AboutPage() {
           Romancelovesophy
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">
-          Romancelovesophy is a quiet retreat from the relentless velocity of the modern internet — a digital sanctuary dedicated to examining romance, love, existential awareness, and the profound art of living.
+          Romance, Love, and Philosophy are three of my main qualities. Here you will find all my works in one place, including activities that I do.
         </p>
       </header>
 
@@ -57,7 +57,7 @@ export default async function AboutPage() {
               &ldquo;You are the Self-aware Reality on which the entire drama of the world exists.&rdquo;
             </p>
             <p className="mt-4 text-sm leading-relaxed text-muted">
-              Aswin Sundharam is an independent thinker, writer, and creator based in India. Deeply influenced by classical philosophy, Eastern non-duality (Advaita), existential literature, and meditative cinema, Aswin established Romancelovesophy to distill profound truths into accessible, contemplative essays and short films.
+              I share my writings, thoughts, and reflections on romance, love, and life. Across this website, YouTube, Spotify, Instagram, and Pinterest, all of my works and creative activities are gathered together in one home.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               {social.map((s) => (
@@ -125,9 +125,9 @@ export default async function AboutPage() {
             <span className="grid h-10 w-10 place-items-center rounded-lg border border-line text-[var(--fg)]">
               <Sparkles size={20} />
             </span>
-            <h3 className="mt-4 font-serif text-lg font-medium">Cinema &amp; Visual Poetry</h3>
+            <h3 className="mt-4 font-serif text-lg font-medium">Media &amp; Reflections</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Pairing timeless dialogue, world cinema masterpieces, and musical textures to evoke contemplative clarity through YouTube short films and podcasts.
+              Sharing thoughts, discussions, and visual reflections across YouTube, the Spotify podcast, Instagram, and Pinterest.
             </p>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default async function AboutPage() {
             Romancelovesophy is committed to original authorship and rigorous editorial integrity. Every article, quote interpretation, and media curation on this website is written and reviewed by real human authors with personal passion and philosophical rigor.
           </p>
           <p>
-            We do not publish automated, scraped, or unverified AI summaries. When we reference classical authors, philosophers, poets, or filmmakers, we provide accurate attributions and genuine contextual analysis.
+            We do not publish automated, scraped, or unverified AI summaries. When we reference classical authors, philosophers, or poets, we provide accurate attributions and genuine contextual analysis.
           </p>
           <p>
             For transparency, we host standard, privacy-friendly advertising through partners like Google AdSense to sustain our independent writing and production costs. You can review how user privacy is guarded in our{" "}

@@ -117,7 +117,7 @@ export default async function HomePage() {
         <div className="container-x flex flex-col items-center py-20 text-center">
           <p className="eyebrow">Stay close to the work</p>
           <h2 className="mt-4 max-w-xl font-serif text-3xl font-medium leading-tight">
-            New quotes, films, and writing — gathered for you
+            New quotes, writings, and reflections — gathered for you
           </h2>
           <div className="mt-8 w-full max-w-md">
             <Newsletter source="home" />

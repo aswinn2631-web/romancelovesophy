@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s · Romancelovesophy",
   },
   description:
-    "Romance, Love, and Philosophy. Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Aswin Sundharam.",
+    "Romance, Love, and Philosophy. Reflections on love, meaning, and life — quotes, writings, and media by Aswin Sundharam.",
   alternates: {
     canonical: siteUrl,
   },
@@ -35,14 +35,14 @@ export const metadata: Metadata = {
     siteName: "Romancelovesophy",
     title: "Romancelovesophy — Romance, Love, and Philosophy",
     description:
-      "Romance, Love, and Philosophy. Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Aswin Sundharam.",
+      "Romance, Love, and Philosophy. Reflections on love, meaning, and life — quotes, writings, and media by Aswin Sundharam.",
     url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
     title: "Romancelovesophy — Romance, Love, and Philosophy",
     description:
-      "Romance, Love, and Philosophy. Quiet reflections on love, meaning, and the art of living — quotes, films, and writing by Aswin Sundharam.",
+      "Romance, Love, and Philosophy. Reflections on love, meaning, and life — quotes, writings, and media by Aswin Sundharam.",
   },
 
   other: {
