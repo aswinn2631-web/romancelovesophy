@@ -23,7 +23,7 @@ export function DirectContact({ email }: DirectContactProps) {
 
   const meetSubject = encodeURIComponent("1-on-1 Google Meet Session");
   const meetBody = encodeURIComponent(
-    "Hi Aswin,\n\nI would love to schedule a free 1-on-1 Google Meet session with you.\n\nMy location / time zone and preferred days or times:\n\n"
+    "Hi Aswin,\n\nI would love to connect for a free 1-on-1 Google Meet session with you.\n\n"
   );
   const generalSubject = encodeURIComponent("Hello Aswin — Romancelovesophy");
 
@@ -106,7 +106,7 @@ export function DirectContact({ email }: DirectContactProps) {
 
         <div className="pt-2 space-y-3">
           <p className="text-xs text-muted leading-relaxed">
-            To request a session, email me directly with your general timezone and preferred days or times:
+            To request a session, you can email me directly:
           </p>
           <a
             href={`mailto:${email}?subject=${meetSubject}&body=${meetBody}`}
