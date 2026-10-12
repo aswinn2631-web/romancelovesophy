@@ -11,13 +11,12 @@ import { Reveal } from "@/components/site/reveal";
 import { Newsletter } from "@/components/site/newsletter";
 import {
   getArticles,
-  getFeaturedQuote,
   getSettings,
 } from "@/lib/queries";
 import { getLatestVideos } from "@/lib/youtube";
 import { storageUrl } from "@/lib/supabase/admin";
 
-// Always render fresh: this page shows scheduled articles/quotes gated by
+// Always render fresh: this page shows scheduled articles gated by
 // published_at, and nothing else was ever pinging Next.js to revalidate the
 // old ISR cache the moment a scheduled post's time arrived. force-dynamic
 // guarantees scheduled content goes live exactly on time.
@@ -25,8 +24,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const settings = await getSettings();
-  const [featured, articles, videos] = await Promise.all([
-    getFeaturedQuote(settings),
+  const [articles, videos] = await Promise.all([
     getArticles(3),
     settings?.videos_on_home
       ? getLatestVideos(settings?.youtube_channel_id ?? null, 6)
@@ -40,7 +38,7 @@ export default async function HomePage() {
     <>
       <ChannelHeader settings={settings} />
 
-      <FeaturedQuote quote={featured} portraitUrl={portraitUrl} />
+      <FeaturedQuote portraitUrl={portraitUrl} />
 
       {/* Latest Videos */}
       {settings?.videos_on_home && (
@@ -117,7 +115,7 @@ export default async function HomePage() {
         <div className="container-x flex flex-col items-center py-20 text-center">
           <p className="eyebrow">Stay close to the work</p>
           <h2 className="mt-4 max-w-xl font-serif text-3xl font-medium leading-tight">
-            New quotes, writings, and reflections — gathered for you
+            New writings, essays, and reflections — gathered for you
           </h2>
           <div className="mt-8 w-full max-w-md">
             <Newsletter source="home" />

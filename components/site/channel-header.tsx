@@ -46,10 +46,10 @@ export function ChannelHeader({ settings }: { settings: Settings | null }) {
 
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
-          href="/quotes"
+          href="/articles"
           className="rounded-md border border-[var(--fg)] px-6 py-3 text-sm tracking-wide transition hover:bg-[var(--fg)] hover:text-[var(--bg)]"
         >
-          Explore quotes
+          Read writings
         </Link>
         <Link
           href="/videos"

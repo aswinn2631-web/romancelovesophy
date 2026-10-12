@@ -5,12 +5,11 @@ import type { NavItem } from "@/lib/types";
 export const DEFAULT_NAV: NavItem[] = [
   { href: "/", label: "Home", visible: true },
   { href: "/articles", label: "Writings", visible: true },
-  { href: "/quotes", label: "Quotes", visible: true },
+  { href: "/doing-good", label: "Doing Good", visible: true },
   { href: "/videos", label: "Videos", visible: true },
   { href: "/about", label: "About", visible: true },
   { href: "/connect", label: "Connect", visible: true },
   { href: "/contact", label: "Contact", visible: true },
-  { href: "/doing-good", label: "Doing Good", visible: true },
 ];
 
 // Merge saved menu config with the known routes: keep saved order + labels +
@@ -23,6 +22,7 @@ export function resolveNav(
   const seen = new Set<string>();
   const out: NavItem[] = [];
   for (const it of items) {
+    if (it.href === "/quotes") continue;
     const def = known.get(it.href);
     if (!def || seen.has(it.href)) continue;
     seen.add(it.href);

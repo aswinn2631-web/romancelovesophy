@@ -141,7 +141,7 @@ export default async function AboutPage() {
         </div>
         <div className="mt-6 space-y-4 text-sm leading-relaxed text-muted">
           <p>
-            Romancelovesophy is committed to original authorship and rigorous editorial integrity. Every article, quote interpretation, and media curation on this website is written and reviewed by real human authors with personal passion and philosophical rigor.
+            Romancelovesophy is committed to original authorship and rigorous editorial integrity. Every article, essay, and media curation on this website is written and reviewed by real human authors with personal passion and philosophical rigor.
           </p>
           <p>
             We do not publish automated, scraped, or unverified AI summaries. When we reference classical authors, philosophers, or poets, we provide accurate attributions and genuine contextual analysis.
@@ -174,10 +174,10 @@ export default async function AboutPage() {
             Contact Aswin
           </Link>
           <Link
-            href="/quotes"
+            href="/doing-good"
             className="rounded-md border border-line px-6 py-3 text-sm font-medium text-muted transition hover:border-[var(--fg)] hover:text-[var(--fg)]"
           >
-            Explore Quotes
+            Doing Good
           </Link>
         </div>
       </section>

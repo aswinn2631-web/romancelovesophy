@@ -11,7 +11,7 @@ export function Footer({ social }: { social: SocialLink[] }) {
           <p className="font-serif text-xl">Romancelovesophy</p>
           <p className="mt-3 text-sm leading-relaxed text-muted">
             A quiet home for reflections on love, meaning, and the art of living.
-            New quotes, writings, and reflections — gathered in one place.
+            New writings, essays, and reflections — gathered in one place.
           </p>
           <div className="mt-6 flex items-center gap-4">
             {social.map((s) => (
@@ -32,7 +32,7 @@ export function Footer({ social }: { social: SocialLink[] }) {
         <div>
           <p className="eyebrow">Newsletter</p>
           <p className="mt-3 text-sm text-muted">
-            New articles, quotes, and reflections — occasionally, never spam.
+            New articles, essays, and reflections — occasionally, never spam.
           </p>
           <div className="mt-4">
             <Newsletter source="footer" />
@@ -46,7 +46,7 @@ export function Footer({ social }: { social: SocialLink[] }) {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
             <Link href="/about" className="hover:text-[var(--fg)]">About</Link>
             <Link href="/articles" className="hover:text-[var(--fg)]">Writings</Link>
-            <Link href="/quotes" className="hover:text-[var(--fg)]">Quotes</Link>
+            <Link href="/doing-good" className="hover:text-[var(--fg)]">Doing Good</Link>
             <Link href="/connect" className="hover:text-[var(--fg)]">Connect</Link>
             <Link href="/contact" className="hover:text-[var(--fg)]">Contact</Link>
             <Link href="/privacy" className="hover:text-[var(--fg)]">Privacy Policy</Link>
