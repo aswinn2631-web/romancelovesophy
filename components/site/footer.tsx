@@ -46,7 +46,7 @@ export function Footer({ social }: { social: SocialLink[] }) {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
             <Link href="/about" className="hover:text-[var(--fg)]">About</Link>
             <Link href="/articles" className="hover:text-[var(--fg)]">Writings</Link>
-            <Link href="/doing-good" className="hover:text-[var(--fg)]">Doing Good</Link>
+            <Link href="/videos" className="hover:text-[var(--fg)]">Videos</Link>
             <Link href="/connect" className="hover:text-[var(--fg)]">Connect</Link>
             <Link href="/contact" className="hover:text-[var(--fg)]">Contact</Link>
             <Link href="/privacy" className="hover:text-[var(--fg)]">Privacy Policy</Link>

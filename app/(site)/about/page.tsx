@@ -174,10 +174,10 @@ export default async function AboutPage() {
             Contact Aswin
           </Link>
           <Link
-            href="/doing-good"
+            href="/videos"
             className="rounded-md border border-line px-6 py-3 text-sm font-medium text-muted transition hover:border-[var(--fg)] hover:text-[var(--fg)]"
           >
-            Doing Good
+            Watch Videos
           </Link>
         </div>
       </section>
